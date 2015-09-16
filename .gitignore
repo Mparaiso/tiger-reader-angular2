@@ -1,0 +1,9 @@
+bin/
+.idea
+*.exe
+server
+typings
+obj
+src
+tsd.json
+*.as3proj
