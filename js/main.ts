@@ -20,137 +20,79 @@ import {
 Component, View, bootstrap, Inject,
 NgForm, FORM_DIRECTIVES, CORE_DIRECTIVES,
 FormBuilder, ControlGroup, Control, NgControl,
-EventEmitter, Pipe, Observable
+EventEmitter, Pipe, Observable, bind
 } from 'angular2/angular2';
 
 import {Http, Headers, HTTP_BINDINGS} from 'angular2/http';
+import {
+RouteConfig, Router,
+ROUTER_BINDINGS, ROUTER_DIRECTIVES,
+ROUTER_BINDINGS, APP_BASE_HREF, LocationStrategy, HashLocationStrategy
+} from 'angular2/router';
+
 
 import {OrderByPipe} from './pipes';
 
-class Address {
-    _id: string;
-    _rev: string;
-    city: string;
-    country: string;
-    type = "address";
-}
-
-/**
- * Address Service
- */
-class AddressService {
-
-    private baseUri: string = "https://camus.cloudant.com/rest-api/";
-
-    constructor( @Inject(Http) private http: Http) { }
-
-    insert(address: Address) {
-        let headers: Headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        return this.http.post(this.baseUri, JSON.stringify(address), { headers })
-            .toRx().map(r=> r.json())
-    }
-    getAll() {
-        return this.http
-            .post(this.baseUri + "_find", JSON.stringify({ selector: { "type": "address" } }))
-            .toRx().map(r=> r.json().docs)
-    }
-}
-
-@Component({
-    selector: 'address-form',
-    properties: ['address_service'],
-    events: ['address_created']
-})
+@Component({ selector: 'main-menu' })
 @View({
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES],
     template: `
-        <!-- ADDRESS FORM -->
-        <form class="form" #f="form" (submit)="onSubmit($event)">
-            <fieldset>
-                <legend>New address</legend>
-                <div class="form-group">
-                    <label>City
-                        <input [(ng-model)]="address.city"
-                            ng-control="city"
-                            type="text" name="city"
-                            required maxlength="100"
-                            minlength="2" class="form-control" />
-                    </label>
-                </div>
-                <div  class="form-group">
-                    <label>Country
-                        <input [(ng-model)]="address.country"
-                            ng-control="country"
-                            type="text" name="country"
-                            required maxlength="100"
-                            minlength="2" class="form-control"/>
-                    </label>
-                </div>
-                <div>
-                    <input type="submit"
-                        [disabled]="!f.valid"
-                        class="btn btn-default" value="submit" />
-                    <input type="reset"
-                        class="btn btn-default" value="reset" />
-                </div>
-            </fieldset>
-        </form>
+    <!--Menu-->
+    <ul>
+        <li><a [router-link]="['/home']">Home</a></li>
+        <li><a [router-link]="['/login']">Login</a></li>
+        <li><a [router-link]="['/signup']">Signup</a></li>
+    </ul>
     `
 })
-class AddressForm {
-    private address_service: AddressService;
-    private address_created = new EventEmitter;
-    address = new Address;
-    onSubmit($event) {
-        console.log(arguments, this)
-        this.address_service.insert(this.address).subscribe(() => {
-            this.address_created.next(this.address)
-            this.address = new Address
-        })
-        $event.preventDefault();
-        return false;
-    }
-}
+class MainMenu { }
 
+@Component({ selector: 'home' })
+@View({
+    directives: [MainMenu],
+    template: `<h1>Home</h1><main-menu/>`
+})
+class Home { }
+
+@Component({ selector: 'login' })
+@View({
+    directives: [MainMenu],
+    template: `<h1>Login</h1><main-menu></main-menu>`
+})
+class Login { }
+
+@Component({ selector: 'signup' })
+@View({
+    directives: [MainMenu],
+    template: `<h1>Signup</h1><main-menu></main-menu>`
+})
+class Signup { }
+
+// Needed for the router to work instead of putting a BASE tag in index.html
+//let HREF_BINDINGS = bind(APP_BASE_HREF).toValue(window.location.origin + window.location.pathname)
+let HASH_LOC_BINDINGS = bind(LocationStrategy).toClass(HashLocationStrategy)
 @Component({
-    selector: 'main',
-    changeDetectionStrategy: "ON_PUSH"
+    selector: 'root'
+    bindings: [ROUTER_BINDINGS,/* HREF_BINDINGS, */HASH_LOC_BINDINGS]
 })
 @View({
-    pipes: [OrderByPipe],
-    directives: [CORE_DIRECTIVES, AddressForm],
+    directives: [ROUTER_DIRECTIVES],
     template: `
-            <!-- MAIN -->
-            <table class="table">
-                <caption>Addresses</caption>
-                <thead>
-                    <tr>
-                        <th>City</th><th>Country</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                <tr *ng-for="#address of addresses|orderBy:'country':'city'">
-                    <td>{{address.city}}</td><td>{{address.country}}</td>
-                </tr>
-                </tbody>
-            </table>
-            <section>
-                <address-form [address_service]="addressService"
-                (address_created)="OnAddressCreated($event)">
-                </address-form>
-            </section>
+            <!-- router -->
+            <router-outlet></router-outlet>
     `
 })
-class MainComponent {
-    addresses: any;
-    constructor(public addressService: AddressService) {
-        this.addressService.getAll().subscribe(r=> this.addresses = r)
-    }
-    OnAddressCreated(address) {
-        this.addressService.getAll().subscribe(r=> this.addresses = r)
+@RouteConfig([
+    { path: '/', redirectTo: '/home' },
+    { path: '/home', as: 'home', component: Home },
+    { path: '/login', as: 'login', component: Login },
+    { path: '/signup', as: 'signup', component: Signup }
+])
+class Root {
+    constructor(private router: Router) {
     }
 }
 
-bootstrap(MainComponent, [AddressService, HTTP_BINDINGS])
+
+
+bootstrap(Root)

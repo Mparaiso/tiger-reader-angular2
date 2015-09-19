@@ -33,6 +33,13 @@ System.register(['angular2/angular2'], function(exports_1) {
                 angular2_1 = angular2_1_1;
             }],
         execute: function() {
+            /**
+             * sort a collection
+             * exemples:
+             *    collection|orderBy:property
+             *    collection|orderBy:propertyA:-propertyB
+             *    collection|orderBy:sortFunction
+             */
             OrderByPipe = (function () {
                 function OrderByPipe() {
                 }

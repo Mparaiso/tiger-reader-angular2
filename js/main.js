@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with tiger-reader program.  If not, see <http://www.gnu.org/licenses/>.
-System.register(['angular2/angular2', 'angular2/http', './pipes'], function(exports_1) {
+System.register(['angular2/angular2', 'angular2/router'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
         switch (arguments.length) {
@@ -25,108 +25,97 @@ System.register(['angular2/angular2', 'angular2/http', './pipes'], function(expo
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var __param = (this && this.__param) || function (paramIndex, decorator) {
-        return function (target, key) { decorator(target, key, paramIndex); }
-    };
-    var angular2_1, http_1, pipes_1;
-    var Address, AddressService, AddressForm, MainComponent;
+    var angular2_1, router_1;
+    var MainMenu, Home, Login, Signup, HASH_LOC_BINDINGS, Root;
     return {
         setters:[
             function (angular2_1_1) {
                 angular2_1 = angular2_1_1;
             },
-            function (http_1_1) {
-                http_1 = http_1_1;
-            },
-            function (pipes_1_1) {
-                pipes_1 = pipes_1_1;
+            function (router_1_1) {
+                router_1 = router_1_1;
             }],
         execute: function() {
-            Address = (function () {
-                function Address() {
-                    this.type = "address";
+            MainMenu = (function () {
+                function MainMenu() {
                 }
-                return Address;
-            })();
-            /**
-             * Address Service
-             */
-            AddressService = (function () {
-                function AddressService(http) {
-                    this.http = http;
-                    this.baseUri = "https://camus.cloudant.com/rest-api/";
-                }
-                AddressService.prototype.insert = function (address) {
-                    var headers = new http_1.Headers();
-                    headers.append("Content-Type", "application/json");
-                    return this.http.post(this.baseUri, JSON.stringify(address), { headers: headers })
-                        .toRx().map(function (r) { return r.json(); });
-                };
-                AddressService.prototype.getAll = function () {
-                    return this.http
-                        .post(this.baseUri + "_find", JSON.stringify({ selector: { "type": "address" } }))
-                        .toRx().map(function (r) { return r.json().docs; });
-                };
-                AddressService = __decorate([
-                    __param(0, angular2_1.Inject(http_1.Http)), 
-                    __metadata('design:paramtypes', [http_1.Http])
-                ], AddressService);
-                return AddressService;
-            })();
-            AddressForm = (function () {
-                function AddressForm() {
-                    this.address_created = new angular2_1.EventEmitter;
-                    this.address = new Address;
-                }
-                AddressForm.prototype.onSubmit = function ($event) {
-                    var _this = this;
-                    console.log(arguments, this);
-                    this.address_service.insert(this.address).subscribe(function () {
-                        _this.address_created.next(_this.address);
-                        _this.address = new Address;
-                    });
-                    $event.preventDefault();
-                    return false;
-                };
-                AddressForm = __decorate([
-                    angular2_1.Component({
-                        selector: 'address-form',
-                        properties: ['address_service'],
-                        events: ['address_created']
-                    }),
+                MainMenu = __decorate([
+                    angular2_1.Component({ selector: 'main-menu' }),
                     angular2_1.View({
-                        directives: [angular2_1.CORE_DIRECTIVES, angular2_1.FORM_DIRECTIVES],
-                        template: "\n        <!-- ADDRESS FORM -->\n        <form class=\"form\" #f=\"form\" (submit)=\"onSubmit($event)\">\n            <fieldset>\n                <legend>New address</legend>\n                <div class=\"form-group\">\n                    <label>City\n                        <input [(ng-model)]=\"address.city\"\n                            ng-control=\"city\"\n                            type=\"text\" name=\"city\"\n                            required maxlength=\"100\"\n                            minlength=\"2\" class=\"form-control\" />\n                    </label>\n                </div>\n                <div  class=\"form-group\">\n                    <label>Country\n                        <input [(ng-model)]=\"address.country\"\n                            ng-control=\"country\"\n                            type=\"text\" name=\"country\"\n                            required maxlength=\"100\"\n                            minlength=\"2\" class=\"form-control\"/>\n                    </label>\n                </div>\n                <div>\n                    <input type=\"submit\"\n                        [disabled]=\"!f.valid\"\n                        class=\"btn btn-default\" value=\"submit\" />\n                    <input type=\"reset\"\n                        class=\"btn btn-default\" value=\"reset\" />\n                </div>\n            </fieldset>\n        </form>\n    "
+                        directives: [router_1.ROUTER_DIRECTIVES],
+                        template: "\n    <!--Menu-->\n    <ul>\n        <li><a [router-link]=\"['/home']\">Home</a></li>\n        <li><a [router-link]=\"['/login']\">Login</a></li>\n        <li><a [router-link]=\"['/signup']\">Signup</a></li>\n    </ul>\n    "
                     }), 
                     __metadata('design:paramtypes', [])
-                ], AddressForm);
-                return AddressForm;
+                ], MainMenu);
+                return MainMenu;
             })();
-            MainComponent = (function () {
-                function MainComponent(addressService) {
-                    var _this = this;
-                    this.addressService = addressService;
-                    this.addressService.getAll().subscribe(function (r) { return _this.addresses = r; });
+            Home = (function () {
+                function Home() {
                 }
-                MainComponent.prototype.OnAddressCreated = function (address) {
-                    var _this = this;
-                    this.addressService.getAll().subscribe(function (r) { return _this.addresses = r; });
-                };
-                MainComponent = __decorate([
+                Home = __decorate([
+                    angular2_1.Component({ selector: 'home' }),
+                    angular2_1.View({
+                        directives: [MainMenu],
+                        template: "<h1>Home</h1><main-menu/>"
+                    }), 
+                    __metadata('design:paramtypes', [])
+                ], Home);
+                return Home;
+            })();
+            Login = (function () {
+                function Login() {
+                }
+                Login = __decorate([
+                    angular2_1.Component({ selector: 'login' }),
+                    angular2_1.View({
+                        directives: [MainMenu],
+                        template: "<h1>Login</h1><main-menu></main-menu>"
+                    }), 
+                    __metadata('design:paramtypes', [])
+                ], Login);
+                return Login;
+            })();
+            Signup = (function () {
+                function Signup() {
+                }
+                Signup = __decorate([
+                    angular2_1.Component({ selector: 'signup' }),
+                    angular2_1.View({
+                        directives: [MainMenu],
+                        template: "<h1>Signup</h1><main-menu></main-menu>"
+                    }), 
+                    __metadata('design:paramtypes', [])
+                ], Signup);
+                return Signup;
+            })();
+            // Needed for the router to work instead of putting a BASE tag in index.html
+            //let HREF_BINDINGS = bind(APP_BASE_HREF).toValue(window.location.origin + window.location.pathname)
+            HASH_LOC_BINDINGS = angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy);
+            Root = (function () {
+                function Root(router) {
+                    this.router = router;
+                }
+                Root = __decorate([
                     angular2_1.Component({
-                        selector: 'main',
-                        changeDetectionStrategy: "ON_PUSH"
+                        selector: 'root',
+                        bindings: [router_1.ROUTER_BINDINGS, HASH_LOC_BINDINGS]
                     }),
                     angular2_1.View({
-                        pipes: [pipes_1.OrderByPipe],
-                        directives: [angular2_1.CORE_DIRECTIVES, AddressForm],
-                        template: "\n            <!-- MAIN -->\n            <table class=\"table\">\n                <caption>Addresses</caption>\n                <thead>\n                    <tr>\n                        <th>City</th><th>Country</th>\n                    </tr>\n                </thead>\n                <tbody>\n\n                <tr *ng-for=\"#address of addresses|orderBy:'country':'city'\">\n                    <td>{{address.city}}</td><td>{{address.country}}</td>\n                </tr>\n                </tbody>\n            </table>\n            <section>\n                <address-form [address_service]=\"addressService\"\n                (address_created)=\"OnAddressCreated($event)\">\n                </address-form>\n            </section>\n    "
-                    }), 
-                    __metadata('design:paramtypes', [AddressService])
-                ], MainComponent);
-                return MainComponent;
+                        directives: [router_1.ROUTER_DIRECTIVES],
+                        template: "\n            <!-- router -->\n            <router-outlet></router-outlet>\n    "
+                    }),
+                    router_1.RouteConfig([
+                        { path: '/', redirectTo: '/home' },
+                        { path: '/home', as: 'home', component: Home },
+                        { path: '/login', as: 'login', component: Login },
+                        { path: '/signup', as: 'signup', component: Signup }
+                    ]), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof router_1.Router !== 'undefined' && router_1.Router) === 'function' && _a) || Object])
+                ], Root);
+                return Root;
+                var _a;
             })();
-            angular2_1.bootstrap(MainComponent, [AddressService, http_1.HTTP_BINDINGS]);
+            angular2_1.bootstrap(Root);
         }
     }
 });

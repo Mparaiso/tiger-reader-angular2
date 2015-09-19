@@ -18,6 +18,14 @@
 
 import {Pipe} from 'angular2/angular2';
 
+
+/**
+ * sort a collection
+ * exemples:
+ *    collection|orderBy:property
+ *    collection|orderBy:propertyA:-propertyB
+ *    collection|orderBy:sortFunction
+ */
 @Pipe({ name: 'orderBy' })
 export class OrderByPipe {
     transform(value, args = []) {
