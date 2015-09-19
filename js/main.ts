@@ -50,30 +50,36 @@ class MainMenu { }
 @Component({ selector: 'home' })
 @View({
     directives: [MainMenu],
-    template: `<h1>Home</h1><main-menu/>`
+    template: `<h1>Home</h1><main-menu/>`
+
 })
 class Home { }
 
 @Component({ selector: 'login' })
 @View({
     directives: [MainMenu],
-    template: `<h1>Login</h1><main-menu></main-menu>`
+    template: `<h1>Login</h1><main-menu></main-menu>`
+
 })
 class Login { }
 
 @Component({ selector: 'signup' })
-@View({
+@View({
+
     directives: [MainMenu],
-    template: `<h1>Signup</h1><main-menu></main-menu>`
+    template: `<h1>Signup</h1><main-menu></main-menu>`
+
 })
 class Signup { }
 
 // Needed for the router to work instead of putting a BASE tag in index.html
+// Not needed with HashLocationStrategy
 //let HREF_BINDINGS = bind(APP_BASE_HREF).toValue(window.location.origin + window.location.pathname)
+
 let HASH_LOC_BINDINGS = bind(LocationStrategy).toClass(HashLocationStrategy)
 @Component({
     selector: 'root'
-    bindings: [ROUTER_BINDINGS,/* HREF_BINDINGS, */HASH_LOC_BINDINGS]
+    bindings: [ROUTER_BINDINGS,/* HREF_BINDINGS, */ HASH_LOC_BINDINGS]
 })
 @View({
     directives: [ROUTER_DIRECTIVES],

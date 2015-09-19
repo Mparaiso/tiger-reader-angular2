@@ -89,6 +89,7 @@ System.register(['angular2/angular2', 'angular2/router'], function(exports_1) {
                 return Signup;
             })();
             // Needed for the router to work instead of putting a BASE tag in index.html
+            // Not needed with HashLocationStrategy
             //let HREF_BINDINGS = bind(APP_BASE_HREF).toValue(window.location.origin + window.location.pathname)
             HASH_LOC_BINDINGS = angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy);
             Root = (function () {
