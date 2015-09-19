@@ -1,12 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <script  src="https://code.angularjs.org/2.0.0-alpha.34/angular2.sfx.dev.js"></script>
-    <script  src="app.js"></script>
-</head>
-<body>
-<h1>Tiger Reader</h1>
-<display></display>
+    <head>
+        <title>Angular 2 Quickstart</title>
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    </head>
+    <body>
+        <section class="container">
+            <main stype="display:inline;"><h3 class="center-block">Loading...</h3></main>
+        </section>
+    <script>var t= Date.now()</script>
+    <!-- ES6-related imports -->
+    <script src="http://cdn.rawgit.com/google/traceur-compiler/90da568c7aa8e53ea362db1fc211fbb4f65b5e94/bin/traceur-runtime.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/systemjs/0.18.4/system.js"></script>
+    <script>
+    // set our baseURL reference path
+    System.config({
+        baseURL: '/',
+        defaultJSExtensions:true
+    });
+    </script>
+    <!-- Angular2 import -->
+    <script src="http://code.angularjs.org/2.0.0-alpha.37/angular2.dev.js"></script>
+    <script src="http://code.angularjs.org/2.0.0-alpha.37/http.dev.js"></script>
+    <script src="http://code.angularjs.org/2.0.0-alpha.37/router.dev.js"></script>
+    <script>
+        //bootstrap the Angular2 application
+        System.import('main').then(function(e){
+            console.log('webpage rendered in',(Date.now()-t)/1000,"seconds")
+        }).catch(console.log.bind(console));
+    </script>
 </body>
 </html>
-
