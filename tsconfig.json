@@ -4,6 +4,7 @@
         "module": "system",
         "sourceMap": true,
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "rootDir":"js"
     }
 }
