@@ -1,0 +1,22 @@
+<div *ng-if="feeds.length > 0 ">
+<h3>Select the feeds you wish to subscribe to.</h3>
+<form class="form" (submit)="onSubmit($event)">
+	<div class="control-group" 
+		*ng-for="#feed of feeds ; #i = index">
+		<label class="row unstyled">
+			<span class="col-xs-1 col-md-1 col-lg-1">
+				<input type="checkbox" [name]="i" [(ng-model)]="feeds[i].subscribe">
+			</span>
+			<span class="col-xs-11 col-md-11 col-lg-11">
+					<div><a [href]="feed.link" target="_blank" [inner-html]="feed.title"></a>
+					</div>
+					<div [inner-html]="feed.contentSnippet"></div>
+				</dl>
+			</span>
+		</label>
+	</div>
+	<div class="control-group">
+		<input type="submit" value="Subscribe">
+	</div>
+</form>
+</div>

@@ -1,104 +1,109 @@
-// tiger-reader is an opensource rss reader 
-// Copyright (C) 2015 mparaiso <mparaiso@online.fr>
-//
-// tiger-reader program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// tiger-reader program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with tiger-reader program.  If not, see <http://www.gnu.org/licenses/>.
+/// <reference path="../typings/tsd.d.ts" />
 
-/// <reference path="../typings/tsd.d.ts"/>
-
-import {
-Component, View, bootstrap, Inject,
-NgForm, FORM_DIRECTIVES, CORE_DIRECTIVES,
-FormBuilder, ControlGroup, Control, NgControl,
-EventEmitter, Pipe, Observable, bind
-} from 'angular2/angular2';
-
-import {Http, Headers, HTTP_BINDINGS} from 'angular2/http';
-import {
-RouteConfig, Router,
-ROUTER_BINDINGS, ROUTER_DIRECTIVES,
-ROUTER_BINDINGS, APP_BASE_HREF, LocationStrategy, HashLocationStrategy
-} from 'angular2/router';
+import { Component, View, bootstrap, bind, CORE_DIRECTIVES, FORM_DIRECTIVES, EventEmitter} from 'angular2/angular2'
+import * as NgRouter from 'angular2/router'
+import * as FeedApi from './feed-api'
 
 
-import {OrderByPipe} from './pipes';
-
-@Component({ selector: 'main-menu' })
-@View({
-    directives: [ROUTER_DIRECTIVES],
-    template: `
-    <!--Menu-->
-    <ul>
-        <li><a [router-link]="['/home']">Home</a></li>
-        <li><a [router-link]="['/login']">Login</a></li>
-        <li><a [router-link]="['/signup']">Signup</a></li>
-    </ul>
-    `
-})
-class MainMenu { }
-
-@Component({ selector: 'home' })
-@View({
-    directives: [MainMenu],
-    template: `<h1>Home</h1><main-menu/>`
-
-})
-class Home { }
-
-@Component({ selector: 'login' })
-@View({
-    directives: [MainMenu],
-    template: `<h1>Login</h1><main-menu></main-menu>`
-
-})
-class Login { }
-
-@Component({ selector: 'signup' })
-@View({
-
-    directives: [MainMenu],
-    template: `<h1>Signup</h1><main-menu></main-menu>`
-
-})
-class Signup { }
-
-// Needed for the router to work instead of putting a BASE tag in index.html
-// Not needed with HashLocationStrategy
-//let HREF_BINDINGS = bind(APP_BASE_HREF).toValue(window.location.origin + window.location.pathname)
-
-let HASH_LOC_BINDINGS = bind(LocationStrategy).toClass(HashLocationStrategy)
 @Component({
-    selector: 'root'
-    bindings: [ROUTER_BINDINGS,/* HREF_BINDINGS, */ HASH_LOC_BINDINGS]
+	selector: 'sub-route-component',
+	//properties:['feeds'],
+	//events:['onSubscribed']
 })
 @View({
-    directives: [ROUTER_DIRECTIVES],
-    template: `
-            <!-- router -->
-            <router-outlet></router-outlet>
-    `
+	directives: [CORE_DIRECTIVES, FORM_DIRECTIVES],
+	templateUrl: 'templates/do-subscribe.tpl.html'
 })
-@RouteConfig([
-    { path: '/', redirectTo: '/home' },
-    { path: '/home', as: 'home', component: Home },
-    { path: '/login', as: 'login', component: Login },
-    { path: '/signup', as: 'signup', component: Signup }
-])
-class Root {
-    constructor(private router: Router) {
-    }
+/** list of feeds to subscribe*/
+class DoSubscribeComponent {
+	private feeds;
+	constructor(private Candidates: FeedApi.CandidateSubscriptionRepository,
+		private SubscriptionRepository: FeedApi.SubscriptionRepository,
+		private router: NgRouter.Router) {
+		this.feeds = Candidates.subscriptions || [];
+	}
+
+	onSubmit($event) {
+		Promise.all(this.feeds.filter(r=> r.subscribe).map((subscription) => this.SubscriptionRepository.subscribe(subscription)))
+			.then(() => this.Candidates.removeAll())
+			.then(() => this.router.navigate('/home/main'))
+	}
 }
 
+@Component({
+	selector: 'sub-home-component'
+})
+@View({
+	templateUrl: 'templates/home-main.tpl.html'
+})
+class HomeMainComponent {
+	constructor(private router: NgRouter.Router) {
+	}
+}
 
+@Component({ selector: 'home-component' })
+@View({
+	template: `<router-outlet></router-outlet>
+	`,
+	directives: [NgRouter.ROUTER_DIRECTIVES]
+})
+@NgRouter.RouteConfig([
+	{ path: '/', redirectTo: '/main' },
+	{ path: '/main', component: HomeMainComponent, as: 'main' },
+	{ path: '/do-subscribe', component: DoSubscribeComponent, as: 'dosubscribe' }
+])
+class HomeComponent {
+	constructor() {
+	}
 
-bootstrap(Root)
+}
+
+@NgRouter.RouteConfig([
+	/* note: @angular2 this is the top-level router */
+	{ path: '/', redirectTo: '/home/' },
+	{ path: '/home/...', component: HomeComponent, as: 'home' }
+])
+@Component({
+	selector: 'root',
+})
+@View({
+	directives: [NgRouter.ROUTER_DIRECTIVES, CORE_DIRECTIVES],
+	templateUrl: 'templates/root.tpl.html'
+})
+/** Root element */
+class RootComponent {
+	constructor(private feedApi: FeedApi.Service,
+		private router: NgRouter.Router,
+		private CandidateRepository: FeedApi.CandidateSubscriptionRepository,
+		private SubscriptionRepository: FeedApi.SubscriptionRepository) {
+	}
+	onSubscribeClicked($event) {
+		let query = prompt('Enter a url where to look for rss feeds');
+		if (query.trim() === "") {
+			return
+		}
+		this.feedApi.findQuery(query).then(r=> {
+			if (r.length == 0) {
+				return this.feedApi.findQuery('site:' + query);
+			} else {
+				return r
+			}
+		}).then((r) => {
+			if (r.length > 0) {
+				this.CandidateRepository.removeAll()
+					.then(() => {
+						return Promise.all(r.map(r=> this.CandidateRepository.insert(r))
+				}).then(() => this.router.navigate('/home/do-subscribe'))
+			}
+		})
+	}
+}
+
+bootstrap(RootComponent, [
+	FeedApi.CandidateSubscriptionRepository,
+	FeedApi.Service,
+	FeedApi.SubscriptionRepository,
+	bind(Window).toValue(window),
+	NgRouter.ROUTER_BINDINGS,
+	bind(NgRouter.LocationStrategy).toClass(NgRouter.HashLocationStrategy)
+])

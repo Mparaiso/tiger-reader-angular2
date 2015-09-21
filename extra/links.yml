@@ -1,0 +1,58 @@
+sites:
+	- site :
+		url: blog.thoughtram.io
+		links:
+			- http://blog.thoughtram.io/angular/2015/05/18/dependency-injection-in-angular-2.html
+
+	- site :
+		url : auth0.com/blog
+		links:
+			- http://blog.thoughtram.io/
+			- http://blog.thoughtram.io/angular/2015/06/16/routing-in-angular-2.html
+
+	- site: 
+		url: http://www.syntaxsuccess.com
+		links:
+			- http://www.syntaxsuccess.com/viewarticle/routing-in-angular-2.0
+			- http://www.syntaxsuccess.com/viewarticle/angular-2.0-grid
+
+	- site:
+		url: http://blog.jhades.org
+		links:
+			- http://blog.jhades.org/introduction-to-angular-2-forms-template-driven-vs-model-driven/
+
+	- site:
+		url: https://github.com
+		links:
+			- https://github.com/gianarb/awesome-angularjs
+			- https://github.com/thelgevold/angular-2-samples
+			- https://github.com/angular/router
+			- https://github.com/AngularShowcase/angular2-sample-app/blob/master/app/app.html
+			- https://github.com/systemjs/systemjs
+			- https://github.com/pkozlowski-opensource/ng2-play
+			- https://github.com/AngularShowcase/angular2-sample-app/blob/master/app/components/users/services/users-service.ts
+			- https://github.com/likeastore/ngDialog
+	- site: 
+		url: http://plnkr.co
+		links:
+			- http://plnkr.co/edit/CdRBpVyy4cxYaVqqxw4x?p=info
+			- http://plnkr.co/edit/t96tw6
+			- http://plnkr.co/edit/CdRBpVyy4cxYaVqqxw4x?p=info
+
+	- site:
+		url: http://victorsavkin.com
+		links:
+			- http://victorsavkin.com/post/110170125256/change-detection-in-angular-2
+
+	- site:
+		url: https://angular.io
+		links:
+			- https://angular.io/docs/js/latest/api/core/NgFor-class.html
+
+links:
+	- http://www.htmlxprs.com/post/54/creating-a-super-simple-todo-app-using-angular-2-tutorial
+	- 'http://www.html5rocks.com/en/tutorials/appcache/beginner/#disqus_thread'
+	- http://angular-meteor.com/tutorials/angular2/routing-and-multiple-views
+	- https://github.com/ibhi/angular-2-router-with-child/blob/master/ts/app.ts
+	- https://github.com/angular/router/issues/353
+	- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice

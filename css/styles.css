@@ -16,9 +16,6 @@ You should have received a copy of the GNU General Public License
 along with tiger-reader program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-html,body,body>section,body>section>main,body>section,main>h3{
-	height: 100%;
-}
 body{
 	font-family: "Source Sans Pro",sans-serif;
 	font-size: 1.5em;

@@ -1,0 +1,28 @@
+<!-- root.html -->
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a href="#" class="navbar-brand">	Tiger Reader
+			</a>
+		</div>
+	</div>
+</nav>
+<main class="container-fluid">
+	<div class="row">
+		<aside class="col-xs-2">
+			<button (click)="onSubscribeClicked($event)">Subscribe</button>
+			<ul class="nav nav-pills-nav-stacked">
+				<li role="presentation"><a href="#">Home</a></li>
+			</ul>
+			<div *ng-if="SubscriptionRepository.subscriptions">
+				<h4>Subscriptions</h4>
+				<h5 *ng-for="#subscription of SubscriptionRepository.subscriptions; #i = index ">
+					{{subscription.title}}
+				</h5>
+			</div>
+		</aside>
+		<article class="col-xs-10">
+		<router-outlet></router-outlet>
+		</article>
+	</div>
+</main>

@@ -1,0 +1,194 @@
+// tiger-reader is an opensource rss reader 
+// Copyright (C) 2015 mparaiso <mparaiso@online.fr>
+//
+// tiger-reader program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// tiger-reader program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with tiger-reader program.  If not, see <http://www.gnu.org/licenses/>.
+
+/// <reference path="../typings/tsd.d.ts"/>
+
+import {
+Component, View, bootstrap, Inject,
+NgForm, FORM_DIRECTIVES, CORE_DIRECTIVES, bind,
+EventEmitter
+} from 'angular2/angular2';
+
+import {Http, Headers, HTTP_BINDINGS} from 'angular2/http';
+
+import {
+RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_BINDINGS,
+APP_BASE_HREF, LocationStrategy, HashLocationStrategy
+} from 'angular2/router';
+
+import {Observable} from 'rx';
+
+import {OrderByPipe} from 'pipes';
+import * as FeedAPI from 'feed-api';
+
+@Component({ selector: 'main-menu' })
+@View({
+    directives: [ROUTER_DIRECTIVES],
+    template: `
+    <!--Menu-->
+    <!--
+    <ul>
+        <li><a [router-link]="['/home']">Home</a></li>
+        <li><a [router-link]="['/login']">Login</a></li>
+        <li><a [router-link]="['/signup']">Signup</a></li>
+    </ul>
+    -->
+    `
+})
+class MainMenu { }
+
+@Component({
+    selector: "find-result-entry-list",
+    properties: ['findresultentries'],
+    events: ['subscribe']
+})
+@View({
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES],
+    template: `
+    <span *ng-if="findresultentries">
+    <form #f="form" class="form"  (submit)="onSubmit($event)">
+        <div *ng-for="#result of findresultentries ; #i = index ">
+        <label for="">
+            <input type="checkbox" [(ng-model)]="entries[i]"/>
+            <dl>
+                <dt><a target="_blank" href="{{result.link}}">{{result.title}}</a></dt>
+                <dd>{{result.contentSnippet}}</dd>
+                <dd><a href="{{result.url}}">{{result.url}}</a></dd>
+            </dl>
+            </label>
+        </div>
+        <div class="control-group">
+            <input type="submit" value="Subscribe" class="btn btn-default" />
+        </div>
+     </form>
+     </span>
+`})
+class FindResultEntryList {
+    private entries = [];
+    private findresultentries = [];
+    private subscribe = new EventEmitter;
+    onSubmit($event) {
+        console.log(this.entries, this.findresultentries)
+        let subs = this.entries.map(function(v, i) {
+            console.log(arguments);
+            return v ? this.findresultentries[i] : -1
+        }.bind(this))
+            .filter((v) => { return v !== -1 });
+
+        this.subscribe.next(subs)
+        this.entries = []
+        this.findresultentries = [];
+    }
+}
+
+@Component({
+    selector: 'side-menu'
+})
+@View({
+    template: '<div>SideMenu</div>'
+})
+class SideMenu { }
+
+@Component({ selector: 'feedEntryList' })
+@View({ template: '<div>FeedEntryList</div>' })
+class FeedEntryList { }
+
+@Component({ selector: 'subscribeFeed' })
+@View({ template: `<find-result-entry-list 
+                        [findresultentries]="findresultentries" 
+                        (subscribe)="onConfirmSubscribe($event)">
+                    </find-result-entry-list>` })
+class SubscribeFeed { }
+
+@Component({
+    bindings: [HTTP_BINDINGS, FeedAPI.Service, Router],
+    selector: 'home'
+})
+@View({
+    directives: [MainMenu, FindResultEntryList, CORE_DIRECTIVES, ROUTER_DIRECTIVES],
+    template: `
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Home</h1>
+                    <div ng-viewport="left"></div>
+                    <div ng-viewport="right"></div>
+            </div>
+       `
+
+})
+class Home {
+    private findresultentries;
+    private subscribedFeeds = [];
+    constructor(private http: Http, private feedAPI: FeedAPI.Service) {
+
+    }
+    onSubscribe($event) {
+        let feed = prompt("Enter a url to locate a feed");
+        this.feedAPI.findQuery(feed).then(r=> this.findresultentries = r)
+    }
+    /**
+     * Event handler
+     */
+    onConfirmSubscribe(feeds) {
+        this.subscribedFeeds = this.subscribedFeeds.concat(feeds);
+    }
+}
+
+
+
+@Component({ selector: 'login' })
+@View({
+    directives: [MainMenu],
+    template: `
+        <h1>Login</h1>
+        <main-menu></main-menu>
+    `
+
+})
+class Login { }
+
+@Component({ selector: 'signup' })
+@View({
+
+    directives: [MainMenu],
+    template: `<h1>Signup</h1><main-menu></main-menu>`
+
+})
+class Signup { }
+
+@Component({
+    selector: 'root',
+    bindings: [ROUTER_BINDINGS, bind(LocationStrategy).toClass(HashLocationStrategy)]
+})
+@View({
+    directives: [ROUTER_DIRECTIVES],
+    template: `
+            <!-- router -->
+            <router-outlet></router-outlet>
+    `
+})
+@RouteConfig([
+    { path: '/', redirectTo: 'home' },
+    { path: '/home', as: 'home', component: {left:'left',right:'right'} },
+    { path: '/login', as: 'login', component: Login },
+    { path: '/signup', as: 'signup', component: Signup }
+])
+class Root {
+    constructor(private router: Router) {
+    }
+}
+    
+bootstrap(Root, [bind(Window).toValue(window)])

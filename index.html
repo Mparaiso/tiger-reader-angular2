@@ -16,9 +16,9 @@
     along with tiger-reader program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!DOCTYPE html>
-<html>
+<html manifest="manifest.appcache">
     <head>
-        <title>Angular 2 Quickstart</title>
+        <title>Tiger Reader</title>
     <!--     <base href="http://localhost:3000/" target="_blank"> -->
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico" />
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
@@ -26,18 +26,44 @@
         <link rel="stylesheet" href="css/styles.css">
     </head>
     <body>
-        <section class="container">
-            <root><h3 class="center-block" style="width:300px;"><img height="40px" style="line-height:30px;margin-right:10px;margin-bottom:5px" src="img/infinity.gif" alt="">Loading...</h3></root>
-        </section>
+        <noscript>
+            This application relies heavily on javascript to give you the best experience. Please enable Javascript.
+        </noscript>
+        <root>
+            <section class="container-fluid">
+                <h3 class="center-block" style="width:300px;"><img height="40px" style="line-height:30px;margin-right:10px;margin-bottom:5px" src="img/infinity.gif" alt="">Loading...</h3>
+            </section>
+        </root>
     <script>var t= Date.now()</script>
+    <script src="https://www.google.com/jsapi"></script>
+    <script>
+    </script>
     <!-- ES6-related imports -->
-    <script src="https://cdn.rawgit.com/google/traceur-compiler/90da568c7aa8e53ea362db1fc211fbb4f65b5e94/bin/traceur-runtime.js"></script>
+    <script src="https://cdn.rawgit.com/google/traceur-compiler/90da568c7aa8e53ea362db1fc211fbb4f65b5e94/bin/traceur-runtime.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.18.4/system.js"></script>
     <script>
     // set our baseURL reference path
     System.config({
-        baseURL: 'js',
-        defaultJSExtensions:true
+        defaultJSExtensions:true,
+        transpiler:'typescript',
+        typescriptOptions:{
+            /* "target": "ES5","module": "system", */
+            sourceMap: true,
+            emitDecoratorMetadata: true,
+            experimentalDecorators: true,
+            rootDir:"js"
+        },
+        map:{
+            typescript: 'vendor/typescript.js'
+        },
+        paths:{
+        },
+        packages:{
+            js:{
+                main:'main.ts',
+                defaultExtension:'ts'
+            }
+        }
     });
     </script>
     <!-- Angular2 import -->
@@ -45,10 +71,13 @@
     <script src="https://code.angularjs.org/2.0.0-alpha.37/http.dev.js"></script>
     <script src="https://code.angularjs.org/2.0.0-alpha.37/router.dev.js"></script>
     <script>
-        //bootstrap the Angular2 application
-        System.import('main').then(function(e){
-            console.log('webpage rendered in',(Date.now()-t)/1000,"seconds")
-        }).catch(console.log.bind(console));
+        window.debug = true;
+        google.load("feeds", "1");
+        google.setOnLoadCallback(function(){ 
+            System.import('js').then(function(e){
+                console.log('webpage rendered in',(Date.now()-t)/1000,"seconds")
+            }).catch(console.log.bind(console));
+        })
     </script>
 </body>
 </html>

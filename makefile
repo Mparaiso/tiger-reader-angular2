@@ -1,11 +1,6 @@
 
 
-all: run
+all: 
+	@(live-server &)
 
-run:  watch
-	@(live-server & )
-
-watch:
-	@(tsc --watch & )
-
-.PHONY: all run watch
+.PHONY: all 
