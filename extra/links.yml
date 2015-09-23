@@ -9,6 +9,7 @@ sites:
 		links:
 			- http://blog.thoughtram.io/
 			- http://blog.thoughtram.io/angular/2015/06/16/routing-in-angular-2.html
+			- http://blog.thoughtram.io/angular/2015/05/18/dependency-injection-in-angular-2.html
 
 	- site: 
 		url: http://www.syntaxsuccess.com
@@ -32,12 +33,18 @@ sites:
 			- https://github.com/pkozlowski-opensource/ng2-play
 			- https://github.com/AngularShowcase/angular2-sample-app/blob/master/app/components/users/services/users-service.ts
 			- https://github.com/likeastore/ngDialog
+			- https://github.com/angular/angular/issues/2788 #@Inject bug with typescript
+			- https://github.com/bevacqua/insane #sanitizer
+			- https://github.com/mapbox/sanitize-caja #sanitizer
+			- 'https://github.com/angular-class/awesome-angular2#gdi2290' #angular2 related projects
+			- https://github.com/ng-book/angular2-rxjs-chat # angular2 and Rx
 	- site: 
 		url: http://plnkr.co
 		links:
 			- http://plnkr.co/edit/CdRBpVyy4cxYaVqqxw4x?p=info
 			- http://plnkr.co/edit/t96tw6
 			- http://plnkr.co/edit/CdRBpVyy4cxYaVqqxw4x?p=info
+			- http://plnkr.co/edit/8mna5McKeq72qH8QlZbi?p=preview #custom render (to load html fragments for instance)
 
 	- site:
 		url: http://victorsavkin.com
@@ -49,6 +56,11 @@ sites:
 		links:
 			- https://angular.io/docs/js/latest/api/core/NgFor-class.html
 
+	- site:
+		url: https://developers.google.com/oauthplayground/
+		links:
+			- https://developers.google.com/oauthplayground/ #experiment with oauth apis
+
 links:
 	- http://www.htmlxprs.com/post/54/creating-a-super-simple-todo-app-using-angular-2-tutorial
 	- 'http://www.html5rocks.com/en/tutorials/appcache/beginner/#disqus_thread'
@@ -56,3 +68,15 @@ links:
 	- https://github.com/ibhi/angular-2-router-with-child/blob/master/ts/app.ts
 	- https://github.com/angular/router/issues/353
 	- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+	- http://blog.mwaysolutions.com/2015/06/18/first-introductions-angular2-use-service-http-components-and-routing/
+	- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise #promises
+	- https://visualstudiomagazine.com/articles/2013/06/01/test-driven-development-with-typescript.aspx #tdd testing
+	- http://valor-software.github.io/ng2-bootstrap/index-bs4.html
+	- https://github.com/ng-book/angular2-rxjs-chat
+	- 'http://getbootstrap.com/css/#type-inline-text'
+	- https://github.com/gbirke/Sanitize.js
+	- https://github.com/cure53/DOMPurify
+	- http://www.beyondjava.net/blog/angularjs-2-0-sneak-preview-data-binding/
+	- http://stackoverflow.com/questions/20286917/angularjs-understanding-design-pattern
+	- https://cloud.google.com/prediction/docs?csw=1
+	- http://websitesthatdontsuck.com/2011/11/the-top-google-apis-youve-never-heard-of/

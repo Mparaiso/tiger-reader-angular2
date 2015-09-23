@@ -36,30 +36,30 @@
         </root>
     <script>var t= Date.now()</script>
     <script src="https://www.google.com/jsapi"></script>
-    <script>
-    </script>
     <!-- ES6-related imports -->
-    <script src="https://cdn.rawgit.com/google/traceur-compiler/90da568c7aa8e53ea362db1fc211fbb4f65b5e94/bin/traceur-runtime.js"></script> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.18.4/system.js"></script>
+    <script src="js/traceur-runtime.js"></script>
+    <script src="js/system.js"></script>
     <script>
     // set our baseURL reference path
     System.config({
         defaultJSExtensions:true,
+        "target": "es5",
+        "module": "commonjs",
         transpiler:'typescript',
         typescriptOptions:{
             /* "target": "ES5","module": "system", */
             sourceMap: true,
             emitDecoratorMetadata: true,
-            experimentalDecorators: true,
-            rootDir:"js"
+            /*experimentalDecorators: true,*/
+            rootDir:"ts"
         },
         map:{
-            typescript: 'vendor/typescript.js'
+            typescript: 'js/typescript.js'
         },
         paths:{
         },
         packages:{
-            js:{
+            ts:{
                 main:'main.ts',
                 defaultExtension:'ts'
             }
@@ -74,7 +74,7 @@
         window.debug = true;
         google.load("feeds", "1");
         google.setOnLoadCallback(function(){ 
-            System.import('js').then(function(e){
+            System.import('ts').then(function(e){
                 console.log('webpage rendered in',(Date.now()-t)/1000,"seconds")
             }).catch(console.log.bind(console));
         })

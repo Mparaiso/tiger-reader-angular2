@@ -1,0 +1,14 @@
+<article *ng-for="#entry of entries; #i = index">
+	<h5>
+		<a role="button" [router-link]="['/home/entries',{entry_id:entry.id}]" class="unstyled">
+			<b>{{entry.title}}</b>
+		</a>
+	</h5>
+	<h6>{{entry.publishedDate}}</h6>
+	<div>
+		<a role="button" [router-link]="['/home/entries',{entry_id:entry.id}]" class="unstyled">
+			{{entry.contentSnippet}}
+		</a>
+	</div>
+	<hr>
+</article>

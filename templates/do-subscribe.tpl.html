@@ -1,22 +1,39 @@
 <div *ng-if="feeds.length > 0 ">
-<h3>Select the feeds you wish to subscribe to.</h3>
-<form class="form" (submit)="onSubmit($event)">
-	<div class="control-group" 
-		*ng-for="#feed of feeds ; #i = index">
-		<label class="row unstyled">
+	<div class="row">
+		<header class="col-md-12">
+			<h3 style="margin-top:0;">Select the feeds you wish to subscribe to.</h3>
+		</header>
+	</div>
+	<form class="form" #f="form" (submit)="onSubmit($event)">
+		<input type="submit" value="Subscribe" class="btn btn-default btn-sm">
+		<hr>
+		<div class="row control-group">
+			<div class="col-xs-1 col-md-1 col-lg-1">
+				<input type="checkbox" name="select_all" [(ng-model)]="allSelected" (change)="onSelectAllFieldsChange($event)" />
+			</div>
+			<div class="col-xs-11 col-md-11 col-lg-11">
+				<span [ng-switch]="allSelected">
+					<template [ng-switch-when]="true">Unselect</template>
+					<template ng-switch-default>Select</template>
+				</span> all feeds.
+			</div>
+		</div>
+		<hr>
+		<div class="row control-group" *ng-for="#feed of feeds ; #i = index" >
 			<span class="col-xs-1 col-md-1 col-lg-1">
-				<input type="checkbox" [name]="i" [(ng-model)]="feeds[i].subscribe">
+				<h5>
+					<input type="checkbox" name="selected_feeds"  [(ng-model)]="feeds[i].selected">
+				</h5>
 			</span>
 			<span class="col-xs-11 col-md-11 col-lg-11">
-					<div><a [href]="feed.link" target="_blank" [inner-html]="feed.title"></a>
-					</div>
-					<div [inner-html]="feed.contentSnippet"></div>
-				</dl>
+				<h5><a [href]="feed.link" target="_blank" [inner-html]="feed.title"></a>
+				</h5>
+				<div [inner-text]="feed.contentSnippet"></div>
 			</span>
-		</label>
-	</div>
-	<div class="control-group">
-		<input type="submit" value="Subscribe">
-	</div>
-</form>
+		</div>
+		<hr>
+		<div>
+			<input type="submit" value="Subscribe" [disabled]="!f.valid" class="btn btn-default btn-sm">
+		</div>
+	</form>
 </div>

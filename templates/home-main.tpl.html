@@ -1,1 +1,10 @@
-<h2>Home Main</h2>
+<article *ng-for="#entry of entryRepository.entries; #i = index">
+	<h5>
+		<a role="button" href="#" class="unstyled">
+			<b>{{entry.title}}</b>
+			<div>
+				{{entry.contentSnippet}}
+			</div>
+		</a>
+	</h5>
+</article>

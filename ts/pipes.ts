@@ -18,6 +18,14 @@
 
 import {Pipe} from 'angular2/angular2';
 
+@Pipe({name: 'join'})
+export class Join{
+    transform(value,args=[]){
+        if (value instanceof Array){
+            value.
+        }
+    }
+}
 
 /**
  * sort a collection

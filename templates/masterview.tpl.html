@@ -1,0 +1,7 @@
+<div *ng-if="feed">
+	<h3><a [href]="feed.link" target="_blank">{{feed.title}}</a></h3>
+	<h6>{{feed.author}}</h6>
+	<p>{{feed.description}}</p>
+	<hr class="h3">
+</div>
+<entrylist [entries]="entries"></entrylist>

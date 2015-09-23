@@ -1,0 +1,10 @@
+<article *ng-if="entry">
+	<h3><a [href]="entry.link" target="_blank">{{entry.title}}</a></h3>
+	<h5>{{entry.publishedDate}}</h5>
+	<div>
+		<span *ng-for='#category of entry.categories'><a [router-link]="['/home/by-category',{category:category}]" class="btn btn-default btn-xs" >{{category}}</a>&nbsp;</span>
+		
+	</div>
+	<p>{{entry.description}}</p>
+	<p class="entry-content" (click)="onContentClicked($event)" inner-html="{{entry.content}}"></p>
+</article>

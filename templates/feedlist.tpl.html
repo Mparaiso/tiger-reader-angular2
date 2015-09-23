@@ -1,0 +1,4 @@
+<h6 *ng-for="#feed of feeds; #i = index " [title]="feed.link">
+	<img [src]="getFaviconUrl(feed.link)" alt="">&nbsp;
+	<a role="button" [router-link]="['/home/feeds',{feed_id:feed.id}]">{{feed.title}}</a>
+</h6>
