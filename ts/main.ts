@@ -20,9 +20,10 @@ import { Component, View, bootstrap, bind, CORE_DIRECTIVES,
 FORM_DIRECTIVES, EventEmitter, Observable, LifecycleEvent} from 'angular2/angular2'
 import * as ngRouter from 'angular2/router';
 import * as feedapi from './feed-api';
-import * as google from './google';
+import * as gapi from './gapi';
 import * as User from './user';
 import * as components from './components';
+import * as ng from 'angular2/angular2';
 
 @Component({
 	selector: 'sub-route-component',
@@ -57,18 +58,6 @@ class DoSubscribeComponent {
 		} else {
 			this.feeds.forEach(feed=> feed.selected = true)
 		}
-	}
-}
-
-@Component({
-	selector: 'sub-home-component'
-})
-@View({
-	directives: [CORE_DIRECTIVES],
-	templateUrl: 'templates/home-main.tpl.html'
-})
-class HomeMainComponent {
-	constructor(private router: ngRouter.Router, private entryRepository: feedapi.EntryRepository) {
 	}
 }
 
@@ -129,28 +118,13 @@ class MasterView {
 
 }
 
-@Component({
-	selector: 'login-component'
-})
-@View({
-	template: ''
-})
-class LoginComponent {
-	constructor(private session: User.Session) {
-		if (session.token == null) {
-			session.authorize(false)
-		}
-	}
-}
-
 @Component({ selector: 'home-component' })
 @View({
 	template: `<router-outlet></router-outlet>`,
 	directives: [ngRouter.ROUTER_DIRECTIVES]
 })
 @ngRouter.RouteConfig([
-	{ path: '/', redirectTo: '/main' },
-	{ path: '/main', component: HomeMainComponent },
+	{ path: '/', redirectTo: '/feeds' },
 	{ path: '/do-subscribe', component: DoSubscribeComponent },
 	{ path: '/feeds', component: MasterView, as: 'feeds' },
 	{ path: '/by-category/:category', component: MasterView, as: 'by-category' },
@@ -162,9 +136,7 @@ class HomeComponent { }
 @ngRouter.RouteConfig([
 	/* note: @angular2 this is the top-level router */
 	{ path: '/', redirectTo: '/home/' },
-	{ path: '/home/...', component: HomeComponent, as: 'home' },
-	{ path: '/login', component: LoginComponent, as: 'login' }
-
+	{ path: '/home/...', component: HomeComponent, as: 'home' }
 ])
 @Component({
 	selector: 'root',
@@ -174,7 +146,7 @@ class HomeComponent { }
 	templateUrl: 'templates/root.tpl.html'
 })
 /** Root element */
-class RootComponent {
+class RootView {
 	private token;
 	constructor(private feedApi: feedapi.Service,
 		private router: ngRouter.Router,
@@ -182,8 +154,19 @@ class RootComponent {
 		private FeedRepository: feedapi.FeedRepository,
 		private session: User.Session) {
 		session.getUserInfo().then((i) => console.log(i))
+		router.subscribe(value=>{
+			console.log('routed!',value);
+		})
 	}
-
+	onSignOutClicked(){
+		this.session.token==null;
+		this.router.navigate('/');
+	}
+	onSignInClicked(){
+		if(this.session.token==null){
+			this.session.authorize(false);
+		}
+	}
 	onSubscribeClicked($event) {
 		let query = prompt('Enter a url where to look for rss feeds');
 		if (query.trim() === "") {
@@ -206,8 +189,8 @@ class RootComponent {
 	}
 }
 
-bootstrap(RootComponent, [
-	google.Service,
+bootstrap(RootView, [
+	gapi.Gapi,
 	User.Session,
 	feedapi.FEED_API_BINDINGS,
 	bind(Window).toValue(window),

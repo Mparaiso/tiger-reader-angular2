@@ -12,9 +12,10 @@
 							{{session.userinfo.name}} 
 						</span>
 					</a></li>
+					<li role="presentation"><a (click)="onSignOutClicked($event)"></a></li>
 				</template>
 				<template ng-switch-default>
-					<li role="presentation"><a [router-link]="['/login']">Login with Google</a></li>
+					<li role="presentation"><a (click)="onSignInClicked($event)">Sign up with Google</a></li>
 				</template>
 			</ul>
 		</div>

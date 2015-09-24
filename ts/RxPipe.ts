@@ -18,7 +18,7 @@
  * @class
  */
 
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="./../typings/tsd.d.ts" />
 
 import {Pipe, bind, ChangeDetectorRef} from "angular2/angular2";
 import {AsyncPipe} from "angular2/pipes";

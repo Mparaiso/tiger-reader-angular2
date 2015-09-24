@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with tiger-reader program.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as Ng from 'angular2/angular2'
-import * as Gapi from './google'
+import * as ng from 'angular2/angular2'
+import * as gapi from './gapi'
 
 
 interface UserInfo {
@@ -25,12 +25,12 @@ interface UserInfo {
 	picture: string;
 }
 
-@Ng.Injectable()
+@ng.Injectable()
 export class Session {
 	token;
 	userinfo: UserInfo;
 	private config;
-	constructor(private gapi: Gapi.Service) {
+	constructor(private _gapi: gapi.Gapi) {
 		this.config = {
 			client_id: '466994525316-kgurs2vm3h1012kv8vsuoukf4dg4vfnh.apps.googleusercontent.com',
 			scopes: 'https://www.googleapis.com/auth/drive.file'
@@ -42,13 +42,13 @@ export class Session {
 			return Promise.resolve(this.userinfo)
 		}
 		return this.authorize()
-			.then(_ => this.gapi.getOAuth2())
+			.then(_ => this._gapi.getOAuth2())
 			.then(oauth2=> oauth2.userinfo.get())
 			.then(userinfo=> this.userinfo = userinfo.result)
 			.catch(err=> (this.userinfo = null,err))
 	}
 	authorize(immediate = true) {
-		return this.gapi.authorize(this.config.client_id, this.config.scopes, immediate)
+		return this._gapi.authorize(this.config.client_id, this.config.scopes, immediate)
 			.then(t => this.token = t)
 			.catch(err => (this.token = null, err))
 

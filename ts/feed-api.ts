@@ -16,9 +16,10 @@
 
 /// <reference path="../typings/tsd.d.ts"/>
 
-declare let google: any;
-
 import {Injectable, Inject} from 'angular2/angular2';
+import * as ng from 'angular2/angular2';
+import * as rx from 'rx';
+import * as gapi from './gapi';
 
 /** an entry of a feed */
 export interface Entry {
@@ -50,7 +51,7 @@ export interface FindResultEntry {
     contentSnippet: string;
 }
 
-@Injectable()
+@ng.Injectable()
 export class Service {
 
     constructor(private window: Window) { }
@@ -84,9 +85,7 @@ export class Service {
     }
 }
 
-class InMemoryStore{}
 
-class GoogleDriveStore{}
 
 /**
  * base class for all repositories

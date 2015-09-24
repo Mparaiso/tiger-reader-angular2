@@ -19,7 +19,7 @@
 import * as Ng from 'angular2/angular2'
 
 @Ng.Injectable()
-export class Service {
+export class Gapi {
 	private _gapi;
 
 	constructor(private window: Window) { }
