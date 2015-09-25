@@ -54,5 +54,5 @@ export class FeedList {
  * displays the main menu
  */
 export class MainMenu {
-	constructor(private session: user.Session) { }
+	constructor() { }
 }  

@@ -5,18 +5,7 @@
 			</a>
 		</div>
 		<div class="navbar-right" id="bs-example-navbar-collapse-1">
-			<ul class="navbar-nav nav nav-pills" [ng-switch]="session.token!=null">
-				<template [ng-switch-when]="true">
-					<li role="presentation"><a href="#">Welcome back 
-						<span *ng-if="session.userinfo!=null">
-							{{session.userinfo.name}} 
-						</span>
-					</a></li>
-					<li role="presentation"><a (click)="onSignOutClicked($event)"></a></li>
-				</template>
-				<template ng-switch-default>
-					<li role="presentation"><a (click)="onSignInClicked($event)">Sign up with Google</a></li>
-				</template>
+			<ul class="navbar-nav nav">
 			</ul>
 		</div>
 	</div>

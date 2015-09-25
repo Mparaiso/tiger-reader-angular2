@@ -18,8 +18,6 @@
 
 import {Injectable, Inject} from 'angular2/angular2';
 import * as ng from 'angular2/angular2';
-import * as rx from 'rx';
-import * as gapi from './gapi';
 
 /** an entry of a feed */
 export interface Entry {
@@ -57,35 +55,39 @@ export class Service {
     constructor(private window: Window) { }
 
     get feeds() {
-        return this.window.google.feeds;
+        return  this.window['google'].feeds;
     }
     /**
      * Search for a feed
      */
-    findQuery(query: string): Promise<Array<Entry>> {
-        return new Promise((resolve, reject) => {
-            this.feeds.findFeeds(query, result=> {
+    findQuery(query: string){
+        return new Promise((resolve,reject)=>{
+             this.feeds.findFeeds(query, result => {
                 if (result.error) {
-                    return reject(result.error)
+                    return reject(result.error);
                 }
-                resolve(result.entries)
-            })
+                    resolve(result.entries);
+            });
         })
     }
-    loadFeed(url: string): Promise<Feed> {
-        return new Promise((resolve, reject) => {
-            var feed = new this.feeds.Feed(url);
-            feed.setNumEntries(30)
-            feed.includeHistoricalEntries();
-            feed.load((result) => {
-                if (result.error) { return reject(result.error) }
-                resolve(result.feed);
-            })
-        });
+    /**
+     * load a feed by url
+     */
+    loadFeed(url: string) {
+            return new Promise((resolve,reject)=>{
+                var feed = new this.feeds.Feed(url);
+                feed.setNumEntries(30)
+                feed.includeHistoricalEntries();
+                feed.load((result) => {
+                    if (result.error) { 
+                        return reject(result.error) 
+                        }
+                    resolve(result.feed)
+                });
+            });
     }
+
 }
-
-
 
 /**
  * base class for all repositories
@@ -154,7 +156,7 @@ export class FeedRepository extends Repository {
         super();
     }
 
-    subscribe(findResultEntry: FindResultEntry): Promise<any> {
+    subscribe(findResultEntry: FindResultEntry){
         var f, i;
         return this.service.loadFeed(findResultEntry.url)
             .then((feed: Feed) => {
@@ -166,7 +168,7 @@ export class FeedRepository extends Repository {
                     entry.feed_id = id;
                     return this.entryRepository.insert(entry);
                 }))
-            }).then(() => i)
+            }).then(_=>(i))
     }
 
     get feeds() {

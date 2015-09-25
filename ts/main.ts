@@ -17,46 +17,52 @@
 /// <reference path="../typings/tsd.d.ts"/>
 
 import { Component, View, bootstrap, bind, CORE_DIRECTIVES,
-FORM_DIRECTIVES, EventEmitter, Observable, LifecycleEvent} from 'angular2/angular2'
+FORM_DIRECTIVES, EventEmitter, Observable} from 'angular2/angular2'
 import * as ngRouter from 'angular2/router';
 import * as feedapi from './feed-api';
-import * as gapi from './gapi';
-import * as User from './user';
 import * as components from './components';
 import * as ng from 'angular2/angular2';
 
 @Component({
-	selector: 'sub-route-component',
-	//properties:['feeds'],
-	//events:['onSubscribed']
+	selector: 'subscribe-component'
 })
 @View({
 	directives: [CORE_DIRECTIVES, FORM_DIRECTIVES],
-	templateUrl: 'templates/do-subscribe.tpl.html'
+	templateUrl: 'templates/subscribe.tpl.html'
 
 })
 /** list of feeds to subscribe*/
-class DoSubscribeComponent {
-	private feeds = [];
+class SubscribeComponent {
+	private findResultEntries = [];
+	private query = "";
 	private allSelected = false;
-	constructor(private Candidates: feedapi.CandidateFeedRepository,
+	constructor(private feedApi: feedapi.Service,
 		private FeedRepository: feedapi.FeedRepository,
+		private routeParams: ngRouter.RouteParams,
 		private router: ngRouter.Router) {
-		this.feeds = Candidates.feeds || [];
+		this.query = routeParams.get('query');
+		this.feedApi.findQuery(this.query)
+			.then(results => {
+				if (results.length > 0) {
+					return Promise.resolve(results)
+				} else {
+					return this.feedApi.findQuery(`site:${this.query}`)
+				}
+			}).then(results => this.findResultEntries.splice(0, 0, ...results))
 	}
 
 	onSubmit($event) {
-		Promise.all(this.feeds.filter(r=> r.selected).map((feed) => this.FeedRepository.subscribe(feed)))
-			.then(() => this.Candidates.deleteAll())
-			.then(() => this.router.navigate('/home/feeds'))
-			.catch(() => this.router.navigate('/home/feeds'))
+		Promise.all(this.findResultEntries.filter(e => e.selected)
+			.map(feed => this.FeedRepository.subscribe(feed)))
+			.then(_=> this.router.navigate('/home/feeds'))
+		return false;
 	}
 
 	onSelectAllFieldsChange($event) {
-		if (this.feeds.every(feed=> feed.selected == true)) {
-			this.feeds.forEach(feed=> feed.selected = false)
+		if (this.findResultEntries.every(entry=> entry.selected == true)) {
+			this.findResultEntries.forEach(entry=> entry.selected = false)
 		} else {
-			this.feeds.forEach(feed=> feed.selected = true)
+			this.findResultEntries.forEach(entry=> entry.selected = true)
 		}
 	}
 }
@@ -80,7 +86,6 @@ class DetailView {
 
 @Component({
 	selector: 'masterview',
-	lifecycle: [LifecycleEvent.OnInit]
 })
 @View({
 	directives: [CORE_DIRECTIVES, ngRouter.ROUTER_DIRECTIVES, components.EntryList],
@@ -94,9 +99,7 @@ class MasterView {
 	constructor(private routeParams: ngRouter.RouteParams,
 		private entryRepository: feedapi.EntryRepository,
 		private feedRepository: feedapi.FeedRepository) {
-	}
-	onInit() {
-		this.feed_id = this.routeParams.get('feed_id');
+			this.feed_id = this.routeParams.get('feed_id');
 		if (this.feed_id) {
 			this.feedRepository.findOne(this.feed_id)
 				.then(feed=> {
@@ -115,7 +118,6 @@ class MasterView {
 				})
 		}
 	}
-
 }
 
 @Component({ selector: 'home-component' })
@@ -125,7 +127,7 @@ class MasterView {
 })
 @ngRouter.RouteConfig([
 	{ path: '/', redirectTo: '/feeds' },
-	{ path: '/do-subscribe', component: DoSubscribeComponent },
+	{ path: '/subscribe/:query', component: SubscribeComponent, as: 'subscribe' },
 	{ path: '/feeds', component: MasterView, as: 'feeds' },
 	{ path: '/by-category/:category', component: MasterView, as: 'by-category' },
 	{ path: '/feeds/:feed_id', component: MasterView, as: 'feeds' },
@@ -147,51 +149,22 @@ class HomeComponent { }
 })
 /** Root element */
 class RootView {
-	private token;
 	constructor(private feedApi: feedapi.Service,
 		private router: ngRouter.Router,
 		private CandidateRepository: feedapi.CandidateFeedRepository,
-		private FeedRepository: feedapi.FeedRepository,
-		private session: User.Session) {
-		session.getUserInfo().then((i) => console.log(i))
-		router.subscribe(value=>{
-			console.log('routed!',value);
-		})
+		private FeedRepository: feedapi.FeedRepository) {
 	}
-	onSignOutClicked(){
-		this.session.token==null;
-		this.router.navigate('/');
-	}
-	onSignInClicked(){
-		if(this.session.token==null){
-			this.session.authorize(false);
-		}
-	}
+
 	onSubscribeClicked($event) {
-		let query = prompt('Enter a url where to look for rss feeds');
+		let query = prompt('Enter a url where to look for rss feeds', '');
 		if (query.trim() === "") {
 			return
 		}
-		this.feedApi.findQuery(query).then(r=> {
-			if (r.length == 0) {
-				return this.feedApi.findQuery('site:' + query);
-			} else {
-				return r
-			}
-		}).then((r) => {
-			if (r.length > 0) {
-				this.CandidateRepository.deleteAll()
-					.then(_ => {
-						return Promise.all(r.map(r=> this.CandidateRepository.insert(r)))
-					}).then(() => this.router.navigate('/home/do-subscribe'))
-			}
-		})
+		this.router.navigate(`/home/subscribe/${query}`)
 	}
 }
 
 bootstrap(RootView, [
-	gapi.Gapi,
-	User.Session,
 	feedapi.FEED_API_BINDINGS,
 	bind(Window).toValue(window),
 	ngRouter.ROUTER_BINDINGS,
