@@ -62,6 +62,7 @@ System.register(['angular2/angular2', 'angular2/router', './backend', './compone
                     this.findResultEntries = [];
                     this.query = "";
                     this.allSelected = false;
+                    foo;
                     this.feeds = this.feedRepository.feeds;
                     this.query = this.routeParams.get('query');
                     this.feedApi.findQuery(this.query)
@@ -254,7 +255,6 @@ System.register(['angular2/angular2', 'angular2/router', './backend', './compone
                 };
                 RootView = __decorate([
                     ngRouter.RouteConfig([
-                        /* note: @angular2 this is the top-level router */
                         { path: '/', redirectTo: '/home/' },
                         { path: '/home/...', component: HomeComponent, as: 'home' }
                     ]),

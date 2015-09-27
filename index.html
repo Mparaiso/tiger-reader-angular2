@@ -86,7 +86,7 @@
         window.debug = true;
         google.load("feeds", "1");
         google.setOnLoadCallback(function(){ 
-            System.import('ts').then(function(e){
+            System.import('js/main').then(function(e){
                 console.log('webpage rendered in',(Date.now()-t)/1000,"seconds")
             }).catch(console.log.bind(console));
         })

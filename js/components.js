@@ -32,7 +32,6 @@ System.register(['angular2/angular2', 'angular2/router', './backend'], function(
                 function Entry(window) {
                     this.window = window;
                 }
-                /** if content is clicked, when a link , open in a new window */
                 Entry.prototype.onContentClicked = function ($event) {
                     var target;
                     $event.stopPropagation();

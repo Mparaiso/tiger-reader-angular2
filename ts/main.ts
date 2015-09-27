@@ -42,6 +42,7 @@ class SubscribeComponent {
 		@ng.Inject(backend.Feed) private Feed: typeof backend.Feed,
 		private routeParams: ngRouter.RouteParams,
 		private router: ngRouter.Router) {
+		foo;
 		this.feeds = this.feedRepository.feeds;
 		this.query = this.routeParams.get('query');
 		this.feedApi.findQuery(this.query)

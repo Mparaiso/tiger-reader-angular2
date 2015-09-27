@@ -49,13 +49,6 @@ System.register(['angular2/angular2'], function(exports_1) {
                 return Join;
             })();
             exports_1("Join", Join);
-            /**
-             * sort a collection
-             * exemples:
-             *    collection|orderBy:property
-             *    collection|orderBy:propertyA:-propertyB
-             *    collection|orderBy:sortFunction
-             */
             OrderByPipe = (function () {
                 function OrderByPipe() {
                 }
@@ -101,7 +94,6 @@ System.register(['angular2/angular2'], function(exports_1) {
                         array = array.reverse();
                     }
                     return (wrapped ? ((value.wrapped = array), value) : array);
-                    /* recursive sort based on property list */
                     function sortProperty(properties, i, a, b) {
                         var prop = properties[i];
                         if (i == properties.length) {

@@ -53,9 +53,6 @@ System.register(['angular2/angular2', 'parse'], function(exports_1) {
                     enumerable: true,
                     configurable: true
                 });
-                /**
-                 * Search for a feed
-                 */
                 Service.prototype.findQuery = function (query) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
@@ -67,9 +64,6 @@ System.register(['angular2/angular2', 'parse'], function(exports_1) {
                         });
                     });
                 };
-                /**
-                 * load a feed by url
-                 */
                 Service.prototype.loadFeed = function (url) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
