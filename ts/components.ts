@@ -41,7 +41,10 @@ export class FeedList {
 		@ng.Inject(backend.Entry) private Entry:typeof backend.Entry) {
 		}
 	
-	getFaviconUrl(domain) {
+	getFaviconUrl(domain:string):string {
+		if (domain.trim()===""){
+			return "https://www.google.com/s2/favicons?domain=http://nodomain"
+		}
 		return "https://www.google.com/s2/favicons?domain=" + domain
 	}
 	

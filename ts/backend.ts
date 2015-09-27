@@ -38,7 +38,7 @@ export class Service {
     /**
      * Search for a feed
      */
-    findQuery(query: string) {
+    findQuery(query: string):Promise<{}[]> {
         return new Promise((resolve, reject) => {
             this.feeds.findFeeds(query, result => {
                 if (result.error) {

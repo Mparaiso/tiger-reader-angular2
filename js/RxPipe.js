@@ -17,7 +17,7 @@
  *
  * @class
  */
-/** 
+/**
 /// <reference path="./../typings/tsd.d.ts" />
 
 import {Pipe, bind, ChangeDetectorRef} from "angular2/angular2";
@@ -52,4 +52,5 @@ export class RxPipe extends AsyncPipe {
 export var rxPipeInjectables: Array<any> = [
   bind(RxPipe).toValue(RxPipe)
 ];
-*/
+*/ 
+//# sourceMappingURL=RxPipe.js.map

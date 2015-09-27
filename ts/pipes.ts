@@ -22,7 +22,7 @@ import {Pipe} from 'angular2/angular2';
 export class Join{
     transform(value,args=[]){
         if (value instanceof Array){
-            value.
+            return value.join(args[0])
         }
     }
 }
