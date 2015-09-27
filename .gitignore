@@ -6,3 +6,4 @@ src
 tsd.json
 *.as3proj
 secret.txt
+.vscode

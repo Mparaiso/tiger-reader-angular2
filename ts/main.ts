@@ -19,10 +19,10 @@
 import { Component, View, bootstrap, bind, CORE_DIRECTIVES,
 FORM_DIRECTIVES, EventEmitter, Observable} from 'angular2/angular2'
 import * as ngRouter from 'angular2/router';
-import * as feedapi from './feed-api';
+import * as backend from './backend';
 import * as components from './components';
 import * as ng from 'angular2/angular2';
-
+import * as rx from 'rx';
 @Component({
 	selector: 'subscribe-component'
 })
@@ -36,11 +36,14 @@ class SubscribeComponent {
 	private findResultEntries = [];
 	private query = "";
 	private allSelected = false;
-	constructor(private feedApi: feedapi.Service,
-		private FeedRepository: feedapi.FeedRepository,
+	private feeds;
+	constructor(private feedApi: backend.Service,
+		private feedRepository: backend.FeedRepository,
+		@ng.Inject(backend.Feed) private Feed: typeof backend.Feed,
 		private routeParams: ngRouter.RouteParams,
 		private router: ngRouter.Router) {
-		this.query = routeParams.get('query');
+		this.feeds = this.feedRepository.feeds;
+		this.query = this.routeParams.get('query');
 		this.feedApi.findQuery(this.query)
 			.then(results => {
 				if (results.length > 0) {
@@ -52,9 +55,13 @@ class SubscribeComponent {
 	}
 
 	onSubmit($event) {
-		Promise.all(this.findResultEntries.filter(e => e.selected)
-			.map(feed => this.FeedRepository.subscribe(feed)))
-			.then(_=> this.router.navigate('/home/feeds'))
+		Promise.all(
+		this.findResultEntries.filter(e => e.selected)
+		.map(feed=>this.Feed.subscribe(feed)))
+		.then(feeds=>{
+			this.feedRepository.feeds.push(...feeds);
+		})
+		this.router.navigate('/home/feeds')
 		return false;
 	}
 
@@ -73,52 +80,79 @@ class SubscribeComponent {
 	template: '<entry [entry]="entry"></entry>'
 })
 class DetailView {
-	entry: feedapi.Entry;
+	entry: backend.Entry;
 	constructor(private routeParams: ngRouter.RouteParams,
-		private entryRepository: feedapi.EntryRepository,
+		@ng.Inject(backend.Entry) private Entry: typeof backend.Entry,
 		private window: Window) {
 		let entryId = routeParams.get('entry_id');
 		if (entryId) {
-			this.entryRepository.findOne(entryId).then(e=> { this.entry = e });
+			this.Entry.findOne(entryId).then(e=> { this.entry = e });
 		}
 	}
 }
 
 @Component({
 	selector: 'masterview',
+	properties: ['feed', 'entries']
 })
 @View({
 	directives: [CORE_DIRECTIVES, ngRouter.ROUTER_DIRECTIVES, components.EntryList],
 	templateUrl: 'templates/masterview.tpl.html'
 
 })
-class MasterView {
-	feed_id;
-	feed = {};
-	entries = [];
+class MasterView { }
+
+@Component({
+	selector: 'feedshow',
+})
+@View({
+	directives: [MasterView],
+	template: '<masterview [feed]="feed" [entries]="entries"></masterview>'
+
+})
+class FeedShowView {
+
+	private feed: backend.Feed;
+	private entries;
 	constructor(private routeParams: ngRouter.RouteParams,
-		private entryRepository: feedapi.EntryRepository,
-		private feedRepository: feedapi.FeedRepository) {
-			this.feed_id = this.routeParams.get('feed_id');
-		if (this.feed_id) {
-			this.feedRepository.findOne(this.feed_id)
-				.then(feed=> {
-					if (feed) {
-						this.feed = feed;
-						return this.entryRepository.findByFeed(feed);
-					} else {
-						return this.entryRepository.findAll()
-					}
-				})
-				.then((entries) => { this.entries = entries })
-		} else {
-			this.entryRepository.findAll()
-				.then((entries) => {
-					this.entries = entries
-				})
-		}
+		@ng.Inject(backend.Feed) private Feed: typeof backend.Feed) { }
+	onActivate(next, prev) {
+		Promise.resolve(this.routeParams.get('feed_id'))
+			.then(feed_id=> {
+				return this.Feed.findOne(feed_id)
+			})
+			.then(feed=> {
+				if (feed == null) {
+					return Promise.reject(new Error('feed not found'))
+				}
+				this.feed = feed;
+				return this.feed.entries.find()
+			}).then(entries=> {
+				this.entries = entries;
+			})
+	}
+
+}
+
+@Component({
+	selector: 'feedindex',
+})
+@View({
+	directives: [MasterView],
+	template: '<masterview [entries]="entries"></masterview>'
+
+})
+class FeedIndexView {
+	private entries;
+	constructor( @ng.Inject(backend.Entry) private Entry: typeof backend.Entry) { }
+	onActivate(next, prev) {
+		return this.Entry.findAll().then(entries=> {
+			this.entries = entries
+		})
 	}
 }
+
+class MasterViewByCategory extends MasterView { }
 
 @Component({ selector: 'home-component' })
 @View({
@@ -128,9 +162,9 @@ class MasterView {
 @ngRouter.RouteConfig([
 	{ path: '/', redirectTo: '/feeds' },
 	{ path: '/subscribe/:query', component: SubscribeComponent, as: 'subscribe' },
-	{ path: '/feeds', component: MasterView, as: 'feeds' },
-	{ path: '/by-category/:category', component: MasterView, as: 'by-category' },
-	{ path: '/feeds/:feed_id', component: MasterView, as: 'feeds' },
+	{ path: '/feeds', component: FeedIndexView, as: 'feeds' },
+	{ path: '/by-category/:category', component: MasterViewByCategory, as: 'by-category' },
+	{ path: '/feeds/:feed_id', component: FeedShowView, as: 'feeds' },
 	{ path: '/entries/:entry_id', component: DetailView, as: 'entries' }
 ])
 class HomeComponent { }
@@ -149,10 +183,17 @@ class HomeComponent { }
 })
 /** Root element */
 class RootView {
-	constructor(private feedApi: feedapi.Service,
+	private feeds = [];
+	constructor(private feedApi: backend.Service,
 		private router: ngRouter.Router,
-		private CandidateRepository: feedapi.CandidateFeedRepository,
-		private FeedRepository: feedapi.FeedRepository) {
+		private feedRepository: backend.FeedRepository,
+		@ng.Inject(backend.Feed) private Feed: typeof backend.Feed,
+		@ng.Inject(backend.Entry)private Entry:typeof backend.Entry) {
+		this.feeds = this.feedRepository.feeds
+		this.Feed.findAll()
+		.then((feeds:any)=>{
+			this.feedRepository.feeds.push(...feeds)
+		})
 	}
 
 	onSubscribeClicked($event) {
@@ -165,7 +206,10 @@ class RootView {
 }
 
 bootstrap(RootView, [
-	feedapi.FEED_API_BINDINGS,
+	backend.FeedRepository,
+	backend.Service,
+	bind(backend.Feed).toValue(backend.Feed),
+	bind(backend.Entry).toValue(backend.Entry),
 	bind(Window).toValue(window),
 	ngRouter.ROUTER_BINDINGS,
 	bind(ngRouter.LocationStrategy).toClass(ngRouter.HashLocationStrategy)

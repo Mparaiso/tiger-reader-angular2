@@ -16,6 +16,7 @@ sites:
 		links:
 			- http://www.syntaxsuccess.com/viewarticle/routing-in-angular-2.0
 			- http://www.syntaxsuccess.com/viewarticle/angular-2.0-grid
+			- http://www.syntaxsuccess.com/viewarticle/using-jquery-with-angular-2.0
 
 	- site:
 		url: http://blog.jhades.org
@@ -25,6 +26,7 @@ sites:
 	- site:
 		url: https://github.com
 		links:
+			- https://github.com/angular/angular/blob/master/CHANGELOG.md
 			- https://github.com/gianarb/awesome-angularjs
 			- https://github.com/thelgevold/angular-2-samples
 			- https://github.com/angular/router
@@ -45,7 +47,12 @@ sites:
 			- http://plnkr.co/edit/t96tw6
 			- http://plnkr.co/edit/CdRBpVyy4cxYaVqqxw4x?p=info
 			- http://plnkr.co/edit/8mna5McKeq72qH8QlZbi?p=preview #custom render (to load html fragments for instance)
-
+			- http://plnkr.co/edit/PvKuiBon0PpM6sNSehc6?p=preview #accordion
+			- http://plnkr.co/edit/2gwdpJQsEZKT43USPH3C?p=preview
+	- site:
+		url: http://angular-tips.com
+		links:
+			- http://angular-tips.com/blog/2015/09/migrating-directives-to-angular-2/
 	- site:
 		url: http://victorsavkin.com
 		links:
@@ -85,3 +92,15 @@ links:
 	- https://www.ng-book.com/2/#packages
 	- https://medium.com/@superhighfives/making-a-music-video-f60757ceb4cf
 	- https://gist.github.com/staltz/868e7e9bc2a7b8c1f754 #rx tutorial
+	- http://www.introtorx.com/
+	- https://egghead.io/lessons/rxjs-rxjs-map-vs-flatmap
+	- https://social.msdn.microsoft.com/Forums/en-US/bc03541d-7b0a-445c-aa86-0cfd541544df/free-online-rx-book?forum=rx
+	- http://stackoverflow.com/questions/tagged/reactive-programming?page=11&sort=active
+	- https://medium.com/@bobiblazeski/of-pipes-and-feeds-6b443b9713e0
+	- http://sysmagazine.com/posts/132463/
+	- https://github.com/Reactive-Extensions/RxJS
+	- http://www.typescriptlang.org/Handbook
+	- http://tryangular2.github.io/
+	- http://blog.rangle.io/angular2-components/
+	- http://nick.perfectedz.com/angular-typescript-di-tip/
+	- https://auth0.com/blog/2015/09/17/angular-2-series-part-2-domain-models-and-dependency-injection/

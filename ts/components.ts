@@ -2,7 +2,7 @@
 
 import * as ng from 'angular2/angular2';
 import * as ngRouter from 'angular2/router';
-import * as user from './user';
+import * as backend from './backend';
 
 @ng.Component({ selector: 'entry', properties: ['entry'] })
 @ng.View({
@@ -34,12 +34,30 @@ export class EntryList {}
 	templateUrl: 'templates/feedlist.tpl.html',
 	directives: [ngRouter.ROUTER_DIRECTIVES, ng.CORE_DIRECTIVES]
 })
-/**
- * displays a vertical menu with a list of  feed titles
- */
 export class FeedList {
+	constructor(
+		private feedRepository:backend.FeedRepository,
+		@ng.Inject(backend.Feed) private Feed:typeof backend.Feed,
+		@ng.Inject(backend.Entry) private Entry:typeof backend.Entry) {
+		}
+	
 	getFaviconUrl(domain) {
 		return "http://www.google.com/s2/favicons?domain=" + domain
+	}
+	
+	onRemoveFeedClicked(feed:backend.Feed){
+		Promise.resolve(feed.relation('entries').query().select('id').find())
+		.then((entries:any)=>{
+			Promise.all(entries.map(e=>e.destroy()))
+		})
+		.then(()=>feed.destroy)
+		.then(()=>{
+			this.feedRepository.feeds.splice(
+				this.feedRepository.feeds.indexOf(feed),
+				1
+			)
+		})
+		return false
 	}
 }
 

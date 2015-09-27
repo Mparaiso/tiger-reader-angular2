@@ -1,14 +1,14 @@
 <mainmenu></mainmenu>
 <main class="container">
 	<div class="row">
-		<aside class="col-xs-2">
+		<aside class="col-xs-3 col-md-2">
 			<h3>&nbsp;</h3>
 			<button class="btn btn-default" (click)="onSubscribeClicked($event)">Subscribe</button>
-			<div *ng-if="FeedRepository.feeds">
-				<feedlist [feeds]="FeedRepository.feeds"></feedlist>
+			<div *ng-if="feeds">
+				<feedlist [feeds]="feeds"></feedlist>
 			</div>
 		</aside>
-		<article class="col-xs-10">
+		<article class="col-xs-9 col-md-10">
 			<router-outlet></router-outlet>
 		</article>
 	</div>
