@@ -23,7 +23,6 @@ import * as components from './components';
 import * as ng from 'angular2/angular2';
 import * as rx from 'rx';
 
-
 ng.bootstrap(components.RootView, [
 	backend.FeedRepository,
 	backend.Service,

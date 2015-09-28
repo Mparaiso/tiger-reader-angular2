@@ -10,15 +10,69 @@
   <script src="lib/jasmine-2.3.4/jasmine.js"></script>
   <script src="lib/jasmine-2.3.4/jasmine-html.js"></script>
   <script src="lib/jasmine-2.3.4/boot.js"></script>
-
+  <script>window.bootJasmine = window.onload ; window.onload=null</script>
   <!-- include source files here... -->
+  <!--
   <script src="src/Player.js"></script>
   <script src="src/Song.js"></script>
-
+  -->
+  <!-- ES6-related imports -->
+    <script src="./../js/traceur-runtime.js"></script>
+    <script src="./../js/system.js"></script>
+    <script>
+    // set our baseURL reference path
+    System.config({
+        defaultJSExtensions:true,
+        //"target": "es5",
+        //"module": "commonjs",
+        transpiler:'typescript',
+        typescriptOptions:{
+            /* "target": "ES5","module": "system", */
+            sourceMap: true,
+            emitDecoratorMetadata: true,
+            /*experimentalDecorators: true,*/
+            rootDir:"ts"
+        },
+        map:{
+            typescript: './../js/typescript.js',
+            parse:'./../js/parse-1.6.0.min.js'
+        },
+        meta:{
+            './../js/parse-1.6.0.min.js':{
+                format:'global',
+                exports:'Parse'
+            }
+        },
+        paths:{
+        },
+        packages:{
+            './../ts':{
+                defaultExtension:'ts'
+            },
+            ts:{
+                main:'main.ts',
+                defaultExtension:'ts'
+            }
+        }
+    });
+    </script>
+<!-- Angular2 import -->
+    <script src="https://code.angularjs.org/2.0.0-alpha.37/angular2.dev.js"></script>
+    <script src="https://code.angularjs.org/2.0.0-alpha.37/http.dev.js"></script>
+    <script src="https://code.angularjs.org/2.0.0-alpha.37/router.dev.js"></script>
+    <script>
+        window.debug = true;
+        window.test = true;
+        System.import('ts/main').then(function(e){
+            // boot jasmine
+           bootJasmine()
+        }).catch(console.log.bind(console));
+    </script>
   <!-- include spec files here... -->
+  <!--
   <script src="spec/SpecHelper.js"></script>
   <script src="spec/PlayerSpec.js"></script>
-
+  -->
 </head>
 
 <body>
