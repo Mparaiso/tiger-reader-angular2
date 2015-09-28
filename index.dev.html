@@ -21,7 +21,7 @@
         <title>Tiger Reader</title>
     <!--     <base href="http://localhost:3000/" target="_blank"> -->
         <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico" />
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet/less" href="./less/styles.less">
 
     </head>
     <body>
@@ -38,6 +38,8 @@
             </section>
         </root>
     <script>var t= Date.now()</script>
+    <script>var less = {env:'production',async:true}</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script>
     <script src="https://www.google.com/jsapi"></script>
     <!-- ES6-related imports -->
     <script src="js/traceur-runtime.js"></script>
@@ -48,13 +50,30 @@
         defaultJSExtensions:true,
         //"target": "es5",
         //"module": "commonjs",
+        transpiler:'typescript',
+        typescriptOptions:{
+            /* "target": "ES5","module": "system", */
+            sourceMap: true,
+            emitDecoratorMetadata: true,
+            /*experimentalDecorators: true,*/
+            rootDir:"ts"
+        },
         map:{
+            typescript: 'js/typescript.js',
             parse:'js/parse-1.6.0.min.js'
         },
         meta:{
             'js/parse-1.6.0.min.js':{
                 format:'global',
                 exports:'Parse'
+            }
+        },
+        paths:{
+        },
+        packages:{
+            ts:{
+                main:'main.ts',
+                defaultExtension:'ts'
             }
         }
     });
@@ -67,7 +86,8 @@
         window.debug = true;
         google.load("feeds", "1");
         google.setOnLoadCallback(function(){ 
-            System.import('js/main').then(function(e){
+            System.import('ts/main').then(function(e){
+                console.log(arguments);
                 console.log('webpage rendered in',(Date.now()-t)/1000,"seconds")
             }).catch(console.log.bind(console));
         })

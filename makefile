@@ -8,3 +8,8 @@
 build:
 	@tsc --rootDir ts --project ts --outDir js --removeComments
 	@lessc less/styles.less css/styles.css
+	
+serve:
+	@( live-server & )
+	
+.PHONY: serve
